@@ -33,6 +33,7 @@ def main
       selection = gets.chomp.to_i
       if selection == 1
         list_employees
+        show_division
       elsif selection == 2
         list_division
         list_division_employees
@@ -82,6 +83,13 @@ def list_division
   Division.all.each_with_index do |division, index|
     puts (index + 1).to_s + ". " + division.name
   end
+end
+
+def show_division
+  puts "Enter the name of the employee to view their division"
+  name = gets.chomp
+  employee = Employee.find_by({:name => name})
+  puts employee.division.name
 end
 
 def list_division_employees
