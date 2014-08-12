@@ -1,6 +1,7 @@
 require 'active_record'
 require './lib/employee'
 require './lib/division'
+require 'pry'
 
 database_configurations = YAML::load(File.open('./db/config.yml'))
 development_configuration = database_configurations['development']
@@ -19,11 +20,14 @@ def main
     puts "Select 'a' to add an employee"
     puts "Select 'l' to view lists"
     puts "Select 'd' to add a new division"
+    puts "Select 'f' to fire an employee"
     puts "Select 'e' to exit"
     choice = gets.chomp
     case choice
     when 'a'
       add_employee
+    when 'f'
+      fired
     when 'l'
       puts "Push '1' to list employees. Push '2' to list divsions:"
       selection = gets.chomp.to_i
@@ -31,6 +35,7 @@ def main
         list_employees
       elsif selection == 2
         list_division
+        list_division_employees
       else
         puts "invaild selection"
       end
@@ -50,6 +55,11 @@ def add_employee
   employee = Employee.new({:name => employee_name})
   employee.save
   puts "Employee added."
+  list_division
+  puts "Enter the employee's division number"
+  division_number = gets.chomp.to_i
+  division_location = Division.all[division_number-1].id
+  employee.update({:division_id => division_location})
 end
 
 def list_employees
@@ -74,6 +84,29 @@ def list_division
   end
 end
 
+def list_division_employees
+  puts "to list the employees of a division, select the divsion number. Or press 'x' to escape:"
+  selection = gets.chomp
+  if selection == 'x'
+    main
+  else
+    selection = selection.to_i
+    result = Division.all[selection - 1].id
+    Employee.all.each do |employee|
+      if employee.division_id == result
+      puts employee.name
+      end
+    end
+  end
+end
+
+def fired
+  list_employees
+  puts "select the number of the employee you want to fire:"
+  selection = gets.chomp.to_i
+  Employee.all[selection - 1].destroy
+  puts "You heartless jerk... they have a family."
+end
 
 
 welcome
