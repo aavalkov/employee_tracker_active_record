@@ -23,11 +23,14 @@ def main
     puts "Select 'd' to add a new division"
     puts "Select 'f' to fire an employee"
     puts "Select 'p' to add a project"
+    puts "Select 's' to see employee's projects"
     puts "Select 'e' to exit"
     choice = gets.chomp
     case choice
     when 'a'
       add_employee
+    when 's'
+      show_employee_projects
     when 'f'
       fired
     when 'l'
@@ -134,6 +137,18 @@ def show_project_employee
   puts project.employee.name
 end
 
+def show_employee_projects
+  list_employees
+  puts "To list the projects, selects the employee's name"
+  choice = gets.chomp
+  name = Employee.find_by({:name => choice})
+  Project.all.each do |project|
+    if project.employee_id == name.id
+      puts project.name
+    end
+  end
+end
+
 def fired
   list_employees
   puts "select the number of the employee you want to fire:"
@@ -141,8 +156,4 @@ def fired
   Employee.all[selection - 1].destroy
   puts "You heartless jerk... they have a family."
 end
-
-
-
-
 welcome
