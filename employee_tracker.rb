@@ -1,6 +1,7 @@
 require 'active_record'
 require './lib/employee'
 require './lib/division'
+require './lib/project'
 require 'pry'
 
 database_configurations = YAML::load(File.open('./db/config.yml'))
@@ -21,6 +22,7 @@ def main
     puts "Select 'l' to view lists"
     puts "Select 'd' to add a new division"
     puts "Select 'f' to fire an employee"
+    puts "Select 'p' to add a project"
     puts "Select 'e' to exit"
     choice = gets.chomp
     case choice
@@ -29,7 +31,7 @@ def main
     when 'f'
       fired
     when 'l'
-      puts "Push '1' to list employees. Push '2' to list divsions:"
+      puts "Push '1' to list employees. Push '2' to list divsions. Push '3' to list projects:"
       selection = gets.chomp.to_i
       if selection == 1
         list_employees
@@ -37,11 +39,15 @@ def main
       elsif selection == 2
         list_division
         list_division_employees
+      elsif selection == 3
+        list_projects
       else
         puts "invaild selection"
       end
     when 'd'
       add_division
+    when 'p'
+      add_project
     when 'e'
       puts "good-bye"
     else
@@ -98,6 +104,21 @@ def list_division_employees
   division = Division.all[selection - 1]
   division.employees.each do |employee|
     puts employee.name
+  end
+end
+
+def add_project
+  puts "Enter name of the project"
+  name = gets.chomp
+  project = Project.new({:name => name})
+  project.save
+  puts "Project Added"
+end
+
+def list_projects
+  puts "All Projects:"
+  Project.all.each_with_index do |project, index|
+    puts (index + 1).to_s + ". " + project.name
   end
 end
 
