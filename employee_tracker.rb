@@ -41,6 +41,7 @@ def main
         list_division_employees
       elsif selection == 3
         list_projects
+        show_project_employee
       else
         puts "invaild selection"
       end
@@ -110,7 +111,11 @@ end
 def add_project
   puts "Enter name of the project"
   name = gets.chomp
-  project = Project.new({:name => name})
+  list_employees
+  puts "Enter the name of the employee for this task:"
+  employee_name = gets.chomp
+  employee = Employee.find_by({:name => employee_name})
+  project = Project.new({:name => name, :employee_id => employee.id})
   project.save
   puts "Project Added"
 end
@@ -122,6 +127,13 @@ def list_projects
   end
 end
 
+def show_project_employee
+  puts "Enter the name of the project"
+  project_name = gets.chomp
+  project = Project.find_by({:name => project_name})
+  puts project.employee.name
+end
+
 def fired
   list_employees
   puts "select the number of the employee you want to fire:"
@@ -129,6 +141,8 @@ def fired
   Employee.all[selection - 1].destroy
   puts "You heartless jerk... they have a family."
 end
+
+
 
 
 welcome
