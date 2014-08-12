@@ -85,18 +85,11 @@ def list_division
 end
 
 def list_division_employees
-  puts "to list the employees of a division, select the divsion number. Or press 'x' to escape:"
-  selection = gets.chomp
-  if selection == 'x'
-    main
-  else
-    selection = selection.to_i
-    result = Division.all[selection - 1].id
-    Employee.all.each do |employee|
-      if employee.division_id == result
-      puts employee.name
-      end
-    end
+  puts "to list the employees of a division, select the divsion number:"
+  selection = gets.chomp.to_i
+  division = Division.all[selection - 1]
+  division.employees.each do |employee|
+    puts employee.name
   end
 end
 
